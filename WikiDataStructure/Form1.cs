@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * Dongyun Huang 30042104
+ * 8/3/2023 week_6
+ * 
+ * Describe: This program is used to perform as a wiki, by
+ * using a 2D string array to manage data structure definitions.
+ */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,7 +30,7 @@ namespace WikiDataStructure
     public partial class FormWiki : Form
     {
 
-        // Initial
+        // Initialise form
         public FormWiki()
         {
             InitializeComponent();
@@ -30,10 +39,11 @@ namespace WikiDataStructure
         // Global Variables
         static int row = 12;
         static int col = 4;
-        //static string[,] DataTable = new string[row, col];
+        static int selectedIndex = 0;
+        static bool sorted = false;
 
-        // Initialise array
-        static string[,] DataTable = new string[12, 4]{
+        // 9.1 Create a global 2D string array, use static variables for the dimensions (row = 12, column = 4)
+        static string[,] DataTable = new string[12, 4]{ // Initialise array
             {"~", "", "", ""},
             {"~", "", "", ""},
             {"~", "", "", ""},
@@ -47,14 +57,6 @@ namespace WikiDataStructure
             {"~", "", "", ""},
             {"~", "", "", ""}
         };
-
-        //static int index = 0;
-        static int selectedIndex = 0;
-        static bool sorted = false;
-
-        // global file name
-        string fileName = "definitions.dat";
-
 
         #region FUNCTIONS
         // Fill listview with array.
@@ -82,7 +84,7 @@ namespace WikiDataStructure
                     DataTable[i, j] = "";
                 }
             }
-
+            UpdataListView();
         }
 
         // Clear textboxes.
@@ -96,400 +98,7 @@ namespace WikiDataStructure
         }
         #endregion
 
-        #region Modify data (add/edit/delete)
-        // Add record from textboxes to array.
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            for (int x = 0; x < row; x++)
-            {
-                if (txtName.Text != "")  // Check emtpy input.
-                {
-                    if (DataTable[x, 0] == "~")
-                    {
-                        toolStripStatusLabel1.Text = "";
-
-                        DataTable[x, 0] = txtName.Text;
-                        DataTable[x, 1] = cboCategory.Text;
-                        DataTable[x, 2] = structure;
-                        DataTable[x, 3] = txtDefinition.Text;
-
-                        // Clear textboxes, focus cursor to txtName.
-                        ClearTextboxes();
-                        txtName.Focus();
-                        break;  // after adding one record, ending loop.
-                    }
-                    else
-                    {
-                        toolStripStatusLabel1.Text = "Cannot add, no space left";
-                    }
-                }
-                else
-                {
-                    toolStripStatusLabel1.Text = "Please enter new record";
-                }
-            }
-            UpdataListView();
-        }
-        // Edit the selected record.
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                selectedIndex = ListViewData.SelectedIndices[0];
-                toolStripStatusLabel1.Text = "";
-
-                DataTable[selectedIndex, 0] = txtName.Text;
-                DataTable[selectedIndex, 1] = cboCategory.Text;
-                DataTable[selectedIndex, 2] = structure;
-                DataTable[selectedIndex, 3] = txtDefinition.Text;
-            }
-            catch
-            {
-                toolStripStatusLabel1.Text = "No selected record to be edited";
-            }
-            ClearTextboxes();
-            UpdataListView();
-        }
-        // Delete the selected record.
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                selectedIndex = ListViewData.SelectedIndices[0];
-                toolStripStatusLabel1.Text = "";
-                DialogResult result = MessageBox.Show("Do you want to delete the record?", "Warning", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    DataTable[selectedIndex, 0] = "~";
-                    DataTable[selectedIndex, 1] = "";
-                    DataTable[selectedIndex, 2] = "";
-                    DataTable[selectedIndex, 3] = "";
-                }
-            }
-            catch
-            {
-                toolStripStatusLabel1.Text = "No selected record to be deleted.";
-            }
-
-            ClearTextboxes();
-            UpdataListView();
-        }
-        #endregion
-
-        #region Sort & Search
-        private void btnBinarySearch_Click(object sender, EventArgs e)
-        {
-            /*// Check if textbox is filled
-            if (!String.IsNullOrEmpty(txtSearch.Text))
-            {
-                // Sort the data and refresh it
-                SortTable();
-                UpdataListView();
-                // Create the target to search
-                string target = txtSearch.Text;
-                int first = 0;
-                int last = row - 1;
-                int position = -1;
-                // Entry and exit condition for loop
-                while (first <= last)
-                {
-                    int middle = (first + last) / 2;
-                    // If target is found
-                    if (DataTable[middle, 0] == target)
-                    {
-                        // Change position and highlight the entry
-                        toolStripStatusLabel1.Text = "Fond";
-                        position = middle;
-                        ListViewData.SelectedItems.Clear();
-                        ListViewData.Items[position].Selected = true;
-                        ListViewData.Items[position].Focused = true;
-                        ListViewData.Select();
-                        // Exit out of loop
-                        break;
-                    }
-                    // Change the middle if entry is higher or lower than the current position
-                    else if (String.CompareOrdinal(DataTable[middle, 0], target) < 0)
-                    {
-                        first = middle + 1;
-                    }
-                    else if (String.CompareOrdinal(DataTable[middle, 0], target) > 0)
-                    {
-                        last = middle - 1;
-                    }
-                }
-                // If position has not changed then it does not exist
-                if (position == -1)
-                {
-                    toolStripStatusLabel1.Text = "The record does not exist";
-                }
-            }*/
-
-
-
-            toolStripStatusLabel1.Text = "";
-            // Declare variables. 
-            string target = txtSearch.Text;
-            int min = 0;
-            int max = row - 1;
-
-            // Check user empty input.
-            if (string.IsNullOrEmpty(txtSearch.Text))
-            {
-                toolStripStatusLabel1.Text = "Please enter a data structure name";
-                return;
-            }
-
-            // Check if the array has been sorted. 
-            if (!sorted)
-            {
-                MessageBox.Show("Please click Sort first");
-                return;
-            }
-            else
-            {
-                
-                UpdataListView();
-
-                // Using while loop to find the target element. 
-                while (min <= max) // "<" to check the last one index[0]
-                {
-                    int mid = (min + max) / 2;
-                    if (DataTable[mid, 0] == target)
-                    {
-                        ListViewData.Items[mid].Selected = true;
-                        toolStripStatusLabel1.Text = "Fond";
-                        break;
-                    }
-
-                    // Focus on the half top rows. 
-                    else if (String.CompareOrdinal(DataTable[mid, 0], target) < 0)
-                    {
-                        min = mid + 1;
-                    }
-
-                    // Focus on the half bottom rows. 
-                    else if (String.CompareOrdinal(DataTable[mid, 0], target) > 0)
-                    {
-                        max = mid - 1;
-                    }
-                    
-                }
-                if (min > max)
-                {
-                    toolStripStatusLabel1.Text = "The record does not exist!";
-                }
-                
-                
-            }
-
-            txtSearch.Clear();
-
-        }
-
-        private void btnBubbleSort_Click(object sender, EventArgs e)
-        {
-            SortTable();
-            sorted = true;
-            UpdataListView();
-        }
-        // Sort method -- only sort the 1st column (Name).
-        private void SortTable()
-        {
-            for (int x = 0; x < row; x++)
-            {
-                for (int i = 0; i < row - 1; i++)
-                {
-                    if (string.CompareOrdinal(DataTable[i, 0], DataTable[i + 1, 0]) > 0)
-                    {
-                        Swap(i);
-                    }
-                }
-            }
-            UpdataListView();
-        }
-        // Swap method -- swap whole row.
-        private void Swap(int indx)
-        {
-            string temp;
-            for (int z = 0; z < col; z++)
-            {
-                temp = DataTable[indx, z];
-                DataTable[indx, z] = DataTable[indx + 1, z];
-                DataTable[indx + 1, z] = temp;
-            }
-        }
-        #endregion
-
-        #region SAVE/LOAD
-
-        // 9.10 Create a SAVE button so the information from the 2D array
-        // can be written into a binary file called definitions.dat
-        // which is sorted by Name, ensure the user has the option to
-        // select an alternative file.
-        // Use a file stream and BinaryWriter to create the file. 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog savefile = new SaveFileDialog();
-            savefile.InitialDirectory = @"C:\\temp\\";
-            savefile.Filter = "Binary File (*.dat)|*.dat";
-            if (savefile.ShowDialog() == DialogResult.OK)
-            {
-                string fileName = savefile.FileName;
-                using (BinaryWriter bw = new BinaryWriter(new FileStream(fileName, FileMode.Append)))
-                {
-                    // Writing the dimensions of the array to the file
-                    //bw.Write(WikiTable.GetLength(0));
-                    //bw.Write(WikiTable.GetLength(1));
-
-                    // Writing the data of the array to the file
-                    for (int i = 0; i < row; i++)
-                    {
-
-                        for (int j = 0; j < col; j++)
-                        {
-
-                            if (string.IsNullOrEmpty(DataTable[i, j]))
-                            {
-                                bw.Write("");
-                            }
-                            else
-                            {
-                                bw.Write(DataTable[i, j]);
-                            }
-                        }
-
-                    }
-                }
-            }
-            /*SaveFileDialog saveFile = new SaveFileDialog();
-            saveFile.Filter = "Binary file|*.dat";
-            //saveFile.FileName = "definitions.dat"; // Default.
-            saveFile.Title = "Save file";
-
-            if (saveFile.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    BinaryWriter bw = new BinaryWriter(new FileStream(fileName, FileMode.Create));
-                    // Use nested loop to access each elements
-                    for (int x = 0; x < row; x++)
-                    {
-                        for (int y = 0; y < col; y++)
-                        {
-                            try
-                            {
-                                // Write each data to the file
-                                bw.Write(DataTable[x, y]);
-                            }
-                            catch (Exception fe)
-                            {
-                                MessageBox.Show(fe.Message + "\nInvalid data.");
-                                return;
-                            }
-                        }
-                    }
-                    bw.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }*/
-
-        }
-
-        // 9.11 Create a LOAD button that will read the information from a binary file
-        // called definitions.dat into the 2D array, ensure the user has the option
-        // to select an alternative file.
-        // Use a file stream and BinaryReader to complete this task.
-        private void btnLoad_Click(object sender, EventArgs e)
-        {
-            int rowRef = 0;
-
-            ResetTable();
-
-            using (OpenFileDialog openFile = new OpenFileDialog())
-            {
-                openFile.Filter = "Binary File (*.dat)|*.dat";
-                openFile.InitialDirectory = @"C:\\temp\\";
-
-                if (openFile.ShowDialog() == DialogResult.OK)
-                {
-                    string openFileName = openFile.FileName;
-                    BinaryReader br = new BinaryReader(new FileStream(openFileName, FileMode.Open));
-                    for (int i = 0; i < row; i++)
-                    {
-                        try
-                        {
-                            for (int j = 0; j < col; j++)
-                            {
-                                DataTable[i, j] = br.ReadString();
-                            }
-                            rowRef++;
-                        }
-                        catch (Exception)
-                        {
-                            toolStripStatusLabel1.Text = "Cannot load file";
-                            break;
-                        }
-
-                    }
-                    br.Close();
-                    UpdataListView();
-                }
-            }
-            /*// Using OpenFileDialog to select file to be opened.
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "Binary file|*.dat";
-            //openFile.FileName = "definitions.dat"; // Default.
-            openFile.Title = "Load file";
-
-            if (openFile.ShowDialog() == DialogResult.OK)
-            {
-                ListViewData.Items.Clear(); // Clear listbox
-
-                // Reading from the file
-                try
-                {
-                    BinaryReader br = new BinaryReader(new FileStream(fileName, FileMode.Open));
-                    while (br.BaseStream.Position != br.BaseStream.Length)
-                    {
-                        for (int x = 0; x < row; x++)
-                        {
-                            for (int y = 0; y < col; y++)
-                            {
-                                try
-                                {
-                                    DataTable[x, y] = br.ReadString();
-                                    
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show(ex.Message + "\nCannot read data from file");
-                                    return;
-                                }
-                            }
-                        }
-                        br.Close();
-                    }
-
-                }
-                catch (Exception)
-                {
-                    toolStripStatusLabel1.Text = "Cannot open file for reading";
-                    return;
-                }
-                // read data from file until the end of the file                    
-
-                // Close the file
-                
-            }
-            UpdataListView();*/
-        }
-        #endregion
-
         #region EVENTS
-
         // Radio buttons (Structure: Linear/Non-Linear).
         string structure = "";
         private void rdoLinear_CheckedChanged(object sender, EventArgs e)
@@ -500,9 +109,8 @@ namespace WikiDataStructure
         {
             structure = "Non-Linear";
         }
-
         // 9.5 A double mouse click in the name text box will clear all four text boxes
-        // and focus the cursor into the name text box.
+        //     and focus the cursor into the name text box.
         // Double click event
         private void txtName_DoubleClick_1(object sender, EventArgs e)
         {
@@ -514,7 +122,6 @@ namespace WikiDataStructure
 
             txtName.Focus();
         }
-
         // Double click listView to delete record.
         private void ListViewData_DoubleClick(object sender, EventArgs e)
         {
@@ -531,9 +138,8 @@ namespace WikiDataStructure
             ClearTextboxes();
             UpdataListView();
         }
-
         // 9.9 Create a method so the user can select a definition (Name) from the ListView
-        // and all the information is displayed in the appropriate Textboxes.
+        //     and all the information is displayed in the appropriate Textboxes.
         // Single click event
         private void ListViewData_MouseClick_1(object sender, MouseEventArgs e)
         {
@@ -557,8 +163,241 @@ namespace WikiDataStructure
                 rdoNonLinear.Checked = true;
             }
         }
-
         #endregion        
+
+        #region Modify data (add/edit/delete)
+        // 9.2 Create an ADD button that will store the information from the 4 text boxes into the 2D array
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            toolStripStatusLabel1.Text = ""; // Clear user feedback; avoid confusing.
+            for (int x = 0; x < row; x++)
+            {
+                if (txtName.Text != "")  // Check emtpy input.
+                {
+                    if (DataTable[x, 0] == "~")
+                    {                    
+                        DataTable[x, 0] = txtName.Text;
+                        DataTable[x, 1] = cboCategory.Text;
+                        DataTable[x, 2] = structure;
+                        DataTable[x, 3] = txtDefinition.Text;
+                        toolStripStatusLabel1.Text = "Successfully added.";
+                        ClearTextboxes(); // Clear all textboxes.
+                        txtName.Focus(); // Focus cursor to txtName.
+                        break;  // after adding one record, ending loop.
+                    }
+                    else
+                    {
+                        toolStripStatusLabel1.Text = "Cannot add, no space left";
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Please enter a new record";
+                }
+            }            
+            UpdataListView();
+        }
+        // 9.3 Create an EDIT button that will allow the user to modify any information from the 4 text boxes into the 2D array
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            toolStripStatusLabel1.Text = "";
+            try
+            {
+                selectedIndex = ListViewData.SelectedIndices[0]; // Get the index of which has been selected.              
+                DataTable[selectedIndex, 0] = txtName.Text;
+                DataTable[selectedIndex, 1] = cboCategory.Text;
+                DataTable[selectedIndex, 2] = structure;
+                DataTable[selectedIndex, 3] = txtDefinition.Text;
+                toolStripStatusLabel1.Text = "Successfully edited.";
+            }
+            catch
+            {
+                toolStripStatusLabel1.Text = "No selected record to be edited";
+            }
+            ClearTextboxes();
+            UpdataListView();
+        }
+        // 9.4 Create a DELETE button that removes all the information from a single entry of the array;
+        //     the user must be prompted before the final deletion occurs
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            toolStripStatusLabel1.Text = "";
+            try
+            {
+                selectedIndex = ListViewData.SelectedIndices[0];
+                toolStripStatusLabel1.Text = "";
+                DialogResult result = MessageBox.Show("Do you want to delete the record?", "Warning", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    DataTable[selectedIndex, 0] = "~";
+                    DataTable[selectedIndex, 1] = "";
+                    DataTable[selectedIndex, 2] = "";
+                    DataTable[selectedIndex, 3] = "";
+                    toolStripStatusLabel1.Text = "Successfully deleted";
+                }
+            }
+            catch
+            {
+                toolStripStatusLabel1.Text = "No selected record to be deleted.";
+            }
+            ClearTextboxes();
+            UpdataListView();
+        }
+        #endregion
+
+        #region Sort & Search
+       
+        // 9.6 Write the code for a Bubble Sort method to sort the 2D array by Name ascending, ensure you use
+        //     a separate swap method that passes the array element to be swapped (do not use any built-in array methods)
+        private void btnBubbleSort_Click(object sender, EventArgs e)
+        {
+            SortTable();            
+            UpdataListView();
+        }
+        // Sort method -- only sort the 1st column (Name).
+        private void SortTable()
+        {
+            for (int x = 0; x < row; x++)
+            {
+                for (int i = 0; i < row - 1; i++) // NB: "row - 1" -> next line "i + 1" will not out of bound.
+                {
+                    if (string.CompareOrdinal(DataTable[i, 0], DataTable[i + 1, 0]) > 0)
+                    {
+                        Swap(i);
+                    }
+                }
+            }
+            sorted = true;
+        }
+        // Swap method -- swap whole row.
+        private void Swap(int indx)
+        {
+            string temp;
+            for (int i = 0; i < col; i++)
+            {
+                temp = DataTable[indx, i];
+                DataTable[indx, i] = DataTable[indx + 1, i];
+                DataTable[indx + 1, i] = temp;
+            }
+        }
+        // 9.7 Write the code for a Binary Search for the Name in the 2D array and
+        //     display the information in the other textboxes when found, add suitable feedback if the search
+        //     in not successful and clear the search textbox(do not use any built-in array methods)
+        private void btnBinarySearch_Click(object sender, EventArgs e)
+        {
+            toolStripStatusLabel1.Text = "";
+            // Declare variables. 
+            string target = txtSearch.Text;
+            int min = 0;
+            int max = row - 1;
+
+            if (string.IsNullOrEmpty(txtSearch.Text)) // Check user empty input.
+            {
+                toolStripStatusLabel1.Text = "Please enter a data structure name";
+                return;
+            }
+
+            if (!sorted) // Check if the array has been sorted. 
+            {
+                toolStripStatusLabel1.Text = "Please click Sort first";
+                return;
+            }
+
+            while (min <= max) //// Using while loop to find the target element. "<" to check the last one index[0]
+            {
+                int mid = (min + max) / 2;
+                if (string.CompareOrdinal(DataTable[mid, 0], target) == 0) // If the mid of array equals target, giving feedback to user, exiting loop.
+                {
+                    toolStripStatusLabel1.Text = "Fond";
+                    ListViewData.SelectedItems.Clear();
+                    ListViewData.Items[mid].Selected = true;
+                    ListViewData.Focus(); // Highlight the target.
+                    break; // End loop.
+                }
+                else if (string.CompareOrdinal(DataTable[mid, 0], target) < 0) // If the mid of array less than target, focus on the half bottom records.
+                {
+                    min = mid + 1;
+                }
+                else if (string.CompareOrdinal(DataTable[mid, 0], target) > 0) // If the mid of array greater than target, focus on the half top records.
+                {
+                    max = mid - 1;
+                }
+            }
+            if (min > max) // Not found case.
+            {
+                toolStripStatusLabel1.Text = "The record does not exist!";
+            }
+            txtSearch.Clear(); // Empty search textbox, be read for next use.
+        }
+        #endregion
+
+        #region SAVE/LOAD
+        // 9.10 Create a SAVE button so the information from the 2D array
+        //      can be written into a binary file called definitions.dat
+        //      which is sorted by Name, ensure the user has the option to
+        //      select an alternative file.
+        //      Use a file stream and BinaryWriter to create the file. 
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog savefile = new SaveFileDialog();
+            savefile.InitialDirectory = @"C:\\temp\\";
+            savefile.Filter = "Binary File (*.dat)|*.dat";
+            if (savefile.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = savefile.FileName;
+                using (BinaryWriter bw = new BinaryWriter(new FileStream(fileName, FileMode.Create))) // NB: BinaryFormatter serialization methods are obsolete.
+                {
+                    // Using nested loop to access each element of array, then using BinaryWriter.Write() save the data to the file
+                    for (int i = 0; i < row; i++)
+                    {
+                        for (int j = 0; j < col; j++)
+                        {                            
+                            bw.Write(DataTable[i, j]);                            
+                        }
+                    }
+                    toolStripStatusLabel1.Text = "File saved";
+                    bw.Close(); // Close always.
+                }
+            }           
+        }
+        // 9.11 Create a LOAD button that will read the information from a binary file
+        //      called definitions.dat into the 2D array, ensure the user has the option
+        //      to select an alternative file.
+        //      Use a file stream and BinaryReader to complete this task.
+        private void btnLoad_Click(object sender, EventArgs e)
+        {     
+            using (OpenFileDialog openFile = new OpenFileDialog())
+            {
+                ResetTable(); // Clear the previous opened file
+                openFile.Filter = "Binary File (*.dat)|*.dat";
+                openFile.InitialDirectory = @"C:\\temp\\";
+                if (openFile.ShowDialog() == DialogResult.OK)
+                {
+                    string openFileName = openFile.FileName;
+                    BinaryReader br = new BinaryReader(new FileStream(openFileName, FileMode.Open));
+                    for (int i = 0; i < row; i++)
+                    {
+                        try
+                        {
+                            for (int j = 0; j < col; j++)
+                            {
+                                DataTable[i, j] = br.ReadString();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            toolStripStatusLabel1.Text = "Cannot load file";
+                            break;
+                        }
+                    }
+                    toolStripStatusLabel1.Text = "New file loaded";
+                    br.Close();
+                    UpdataListView();
+                }
+            }            
+        }
+        #endregion
+                
     }
 }
 
