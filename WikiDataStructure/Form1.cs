@@ -59,8 +59,8 @@ namespace WikiDataStructure
         };
 
         #region FUNCTIONS
-        // Fill listview with array.
-        private void UpdataListView()
+        // 9.8 Create a display method that will show the following information in a ListView: Name and Category
+        private void UpdateListView()
         {
             ListViewData.Items.Clear();
             for (int x = 0; x < row; x++)
@@ -84,7 +84,7 @@ namespace WikiDataStructure
                     DataTable[i, j] = "";
                 }
             }
-            UpdataListView();
+            UpdateListView();
         }
 
         // Clear textboxes.
@@ -136,7 +136,7 @@ namespace WikiDataStructure
             }
             SortTable();
             ClearTextboxes();
-            UpdataListView();
+            UpdateListView();
         }
         // 9.9 Create a method so the user can select a definition (Name) from the ListView
         //     and all the information is displayed in the appropriate Textboxes.
@@ -195,7 +195,7 @@ namespace WikiDataStructure
                     toolStripStatusLabel1.Text = "Please enter a new record";
                 }
             }            
-            UpdataListView();
+            UpdateListView();
         }
         // 9.3 Create an EDIT button that will allow the user to modify any information from the 4 text boxes into the 2D array
         private void btnEdit_Click(object sender, EventArgs e)
@@ -215,7 +215,7 @@ namespace WikiDataStructure
                 toolStripStatusLabel1.Text = "No selected record to be edited";
             }
             ClearTextboxes();
-            UpdataListView();
+            UpdateListView();
         }
         // 9.4 Create a DELETE button that removes all the information from a single entry of the array;
         //     the user must be prompted before the final deletion occurs
@@ -241,7 +241,7 @@ namespace WikiDataStructure
                 toolStripStatusLabel1.Text = "No selected record to be deleted.";
             }
             ClearTextboxes();
-            UpdataListView();
+            UpdateListView();
         }
         #endregion
 
@@ -252,7 +252,7 @@ namespace WikiDataStructure
         private void btnBubbleSort_Click(object sender, EventArgs e)
         {
             SortTable();            
-            UpdataListView();
+            UpdateListView();
         }
         // Sort method -- only sort the 1st column (Name).
         private void SortTable()
@@ -341,11 +341,11 @@ namespace WikiDataStructure
         {
             SaveFileDialog savefile = new SaveFileDialog();
             savefile.InitialDirectory = @"C:\\temp\\";
-            savefile.Filter = "Binary File (*.dat)|*.dat";
+            savefile.Filter = "definitions (*.dat)|*.dat";
             if (savefile.ShowDialog() == DialogResult.OK)
             {
-                string fileName = savefile.FileName;
-                using (BinaryWriter bw = new BinaryWriter(new FileStream(fileName, FileMode.Create))) // NB: BinaryFormatter serialization methods are obsolete.
+                string definitions = savefile.FileName;
+                using (BinaryWriter bw = new BinaryWriter(new FileStream(definitions, FileMode.Create))) // NB: BinaryFormatter serialization methods are obsolete.
                 {
                     // Using nested loop to access each element of array, then using BinaryWriter.Write() save the data to the file
                     for (int i = 0; i < row; i++)
@@ -369,12 +369,12 @@ namespace WikiDataStructure
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
                 ResetTable(); // Clear the previous opened file
-                openFile.Filter = "Binary File (*.dat)|*.dat";
+                openFile.Filter = "definitions (*.dat)|*.dat";
                 openFile.InitialDirectory = @"C:\\temp\\";
                 if (openFile.ShowDialog() == DialogResult.OK)
                 {
-                    string openFileName = openFile.FileName;
-                    BinaryReader br = new BinaryReader(new FileStream(openFileName, FileMode.Open));
+                    string definitions = openFile.FileName;
+                    BinaryReader br = new BinaryReader(new FileStream(definitions, FileMode.Open));
                     for (int i = 0; i < row; i++)
                     {
                         try
@@ -392,7 +392,7 @@ namespace WikiDataStructure
                     }
                     toolStripStatusLabel1.Text = "New file loaded";
                     br.Close();
-                    UpdataListView();
+                    UpdateListView();
                 }
             }            
         }
