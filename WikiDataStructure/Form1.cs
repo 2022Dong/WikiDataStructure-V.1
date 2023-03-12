@@ -1,9 +1,9 @@
 ﻿/*
  * Dongyun Huang 30042104
- * 8/3/2023 week_6
+ * 12/3/2023 week_6
  * 
  * Describe: This program is used to perform as a wiki, by
- * using a 2D string array to manage data structure definitions.
+ * using a 2D string array to operate data structure definitions.
  */
 
 using System;
