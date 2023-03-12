@@ -45,15 +45,13 @@
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
-            this.grpStructureOptions = new System.Windows.Forms.GroupBox();
-            this.rdoNonLinear = new System.Windows.Forms.RadioButton();
-            this.rdoLinear = new System.Windows.Forms.RadioButton();
+            this.lblStructure = new System.Windows.Forms.Label();
+            this.txtCategory = new System.Windows.Forms.TextBox();
+            this.txtStructure = new System.Windows.Forms.TextBox();
             stsMessage = new System.Windows.Forms.StatusStrip();
             stsMessage.SuspendLayout();
-            this.grpStructureOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // stsMessage
@@ -90,9 +88,9 @@
             // txtName
             // 
             this.txtName.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtName.Location = new System.Drawing.Point(125, 99);
+            this.txtName.Location = new System.Drawing.Point(145, 99);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(175, 37);
+            this.txtName.Size = new System.Drawing.Size(163, 37);
             this.txtName.TabIndex = 1;
             this.txtName.DoubleClick += new System.EventHandler(this.txtName_DoubleClick_1);
             // 
@@ -103,9 +101,9 @@
             this.Category});
             this.ListViewData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ListViewData.HideSelection = false;
-            this.ListViewData.Location = new System.Drawing.Point(494, 43);
+            this.ListViewData.Location = new System.Drawing.Point(494, 45);
             this.ListViewData.Name = "ListViewData";
-            this.ListViewData.Size = new System.Drawing.Size(305, 355);
+            this.ListViewData.Size = new System.Drawing.Size(305, 353);
             this.ListViewData.TabIndex = 2;
             this.ListViewData.UseCompatibleStateImageBehavior = false;
             this.ListViewData.View = System.Windows.Forms.View.Details;
@@ -115,16 +113,18 @@
             // Nane
             // 
             this.Nane.Text = "Name";
+            this.Nane.Width = 101;
             // 
             // Category
             // 
             this.Category.Text = "Category";
+            this.Category.Width = 134;
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
             this.lblName.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblName.Location = new System.Drawing.Point(18, 95);
+            this.lblName.Location = new System.Drawing.Point(18, 98);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(86, 31);
             this.lblName.TabIndex = 3;
@@ -134,7 +134,7 @@
             // 
             this.lblCategory.AutoSize = true;
             this.lblCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCategory.Location = new System.Drawing.Point(18, 140);
+            this.lblCategory.Location = new System.Drawing.Point(18, 154);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(125, 31);
             this.lblCategory.TabIndex = 3;
@@ -144,7 +144,7 @@
             // 
             this.lblDefinition.AutoSize = true;
             this.lblDefinition.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDefinition.Location = new System.Drawing.Point(18, 256);
+            this.lblDefinition.Location = new System.Drawing.Point(18, 247);
             this.lblDefinition.Name = "lblDefinition";
             this.lblDefinition.Size = new System.Drawing.Size(128, 31);
             this.lblDefinition.TabIndex = 3;
@@ -214,22 +214,6 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // cboCategory
-            // 
-            this.cboCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Items.AddRange(new object[] {
-            "Array",
-            "List",
-            "Tree",
-            "Graphs",
-            "Abstract",
-            "Hash"});
-            this.cboCategory.Location = new System.Drawing.Point(125, 140);
-            this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(175, 38);
-            this.cboCategory.TabIndex = 7;
-            // 
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(104, 12);
@@ -250,61 +234,54 @@
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
-            // grpStructureOptions
+            // lblStructure
             // 
-            this.grpStructureOptions.Controls.Add(this.rdoNonLinear);
-            this.grpStructureOptions.Controls.Add(this.rdoLinear);
-            this.grpStructureOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStructureOptions.Location = new System.Drawing.Point(14, 184);
-            this.grpStructureOptions.Name = "grpStructureOptions";
-            this.grpStructureOptions.Size = new System.Drawing.Size(282, 78);
-            this.grpStructureOptions.TabIndex = 11;
-            this.grpStructureOptions.TabStop = false;
-            this.grpStructureOptions.Text = "Structure";
+            this.lblStructure.AutoSize = true;
+            this.lblStructure.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStructure.Location = new System.Drawing.Point(18, 204);
+            this.lblStructure.Name = "lblStructure";
+            this.lblStructure.Size = new System.Drawing.Size(125, 31);
+            this.lblStructure.TabIndex = 3;
+            this.lblStructure.Text = "Structure";
             // 
-            // rdoNonLinear
+            // txtCategory
             // 
-            this.rdoNonLinear.AutoSize = true;
-            this.rdoNonLinear.Location = new System.Drawing.Point(127, 28);
-            this.rdoNonLinear.Name = "rdoNonLinear";
-            this.rdoNonLinear.Size = new System.Drawing.Size(154, 33);
-            this.rdoNonLinear.TabIndex = 1;
-            this.rdoNonLinear.TabStop = true;
-            this.rdoNonLinear.Text = "Non-Linear";
-            this.rdoNonLinear.UseVisualStyleBackColor = true;
-            this.rdoNonLinear.CheckedChanged += new System.EventHandler(this.rdoNonLinear_CheckedChanged);
+            this.txtCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCategory.Location = new System.Drawing.Point(145, 151);
+            this.txtCategory.Name = "txtCategory";
+            this.txtCategory.Size = new System.Drawing.Size(163, 37);
+            this.txtCategory.TabIndex = 1;
+            this.txtCategory.DoubleClick += new System.EventHandler(this.txtName_DoubleClick_1);
             // 
-            // rdoLinear
+            // txtStructure
             // 
-            this.rdoLinear.AutoSize = true;
-            this.rdoLinear.Location = new System.Drawing.Point(17, 29);
-            this.rdoLinear.Name = "rdoLinear";
-            this.rdoLinear.Size = new System.Drawing.Size(101, 33);
-            this.rdoLinear.TabIndex = 0;
-            this.rdoLinear.TabStop = true;
-            this.rdoLinear.Text = "Linear";
-            this.rdoLinear.UseVisualStyleBackColor = true;
-            this.rdoLinear.CheckedChanged += new System.EventHandler(this.rdoLinear_CheckedChanged);
+            this.txtStructure.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtStructure.Location = new System.Drawing.Point(145, 206);
+            this.txtStructure.Name = "txtStructure";
+            this.txtStructure.Size = new System.Drawing.Size(163, 37);
+            this.txtStructure.TabIndex = 1;
+            this.txtStructure.DoubleClick += new System.EventHandler(this.txtName_DoubleClick_1);
             // 
             // FormWiki
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(811, 423);
-            this.Controls.Add(this.grpStructureOptions);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(stsMessage);
-            this.Controls.Add(this.cboCategory);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.btnBubbleSort);
             this.Controls.Add(this.btnBinarySearch);
             this.Controls.Add(this.lblDefinition);
+            this.Controls.Add(this.lblStructure);
             this.Controls.Add(this.lblCategory);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.ListViewData);
             this.Controls.Add(this.txtDefinition);
+            this.Controls.Add(this.txtStructure);
+            this.Controls.Add(this.txtCategory);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.txtSearch);
             this.Name = "FormWiki";
@@ -312,8 +289,6 @@
             this.Text = "FormWiki";
             stsMessage.ResumeLayout(false);
             stsMessage.PerformLayout();
-            this.grpStructureOptions.ResumeLayout(false);
-            this.grpStructureOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,14 +310,13 @@
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.ComboBox cboCategory;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.ToolStripStatusLabel stsLbl;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.GroupBox grpStructureOptions;
-        private System.Windows.Forms.RadioButton rdoNonLinear;
-        private System.Windows.Forms.RadioButton rdoLinear;
+        private System.Windows.Forms.Label lblStructure;
+        private System.Windows.Forms.TextBox txtCategory;
+        private System.Windows.Forms.TextBox txtStructure;
     }
 }
 

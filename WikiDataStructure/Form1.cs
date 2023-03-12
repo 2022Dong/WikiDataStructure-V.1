@@ -34,6 +34,7 @@ namespace WikiDataStructure
         public FormWiki()
         {
             InitializeComponent();
+            ResetTable();
         }
 
         // Global Variables
@@ -43,7 +44,8 @@ namespace WikiDataStructure
         static bool sorted = false;
 
         // 9.1 Create a global 2D string array, use static variables for the dimensions (row = 12, column = 4)
-        static string[,] DataTable = new string[12, 4]{ // Initialise array
+        static string[,] DataTable = new string[row, col]; // Initialise array
+/*        static string[,] DataTable = new string[12, 4]{ // Initialise array
             {"~", "", "", ""},
             {"~", "", "", ""},
             {"~", "", "", ""},
@@ -56,7 +58,7 @@ namespace WikiDataStructure
             {"~", "", "", ""},
             {"~", "", "", ""},
             {"~", "", "", ""}
-        };
+        };*/
 
         #region FUNCTIONS
         // 9.8 Create a display method that will show the following information in a ListView: Name and Category
@@ -75,11 +77,13 @@ namespace WikiDataStructure
                 }
             }
         }
+        // Initialise array
         private void ResetTable()
         {
             for (int i = 0; i < row; i++)
-            {
-                for (int j = 0; j < col; j++)
+            {                
+                DataTable[i, 0] = "~"; // The 1st column set "~".
+                for (int j = 1; j < col; j++)  // The rest set "".
                 {
                     DataTable[i, j] = "";
                 }
@@ -91,33 +95,21 @@ namespace WikiDataStructure
         private void ClearTextboxes()
         {
             txtName.Text = "";
-            cboCategory.Text = "";
-            rdoLinear.Checked = false;
-            rdoNonLinear.Checked = false;
+            txtCategory.Text = "";
+            txtStructure.Text = "";
             txtDefinition.Text = "";
         }
         #endregion
 
         #region EVENTS
-        // Radio buttons (Structure: Linear/Non-Linear).
-        string structure = "";
-        private void rdoLinear_CheckedChanged(object sender, EventArgs e)
-        {
-            structure = "Linear";
-        }
-        private void rdoNonLinear_CheckedChanged(object sender, EventArgs e)
-        {
-            structure = "Non-Linear";
-        }
         // 9.5 A double mouse click in the name text box will clear all four text boxes
         //     and focus the cursor into the name text box.
         // Double click event
         private void txtName_DoubleClick_1(object sender, EventArgs e)
         {
             txtName.Clear();
-            cboCategory.Text = null;
-            rdoLinear.Checked = false;
-            rdoNonLinear.Checked = false;
+            txtCategory.Clear();
+            txtStructure.Clear();
             txtDefinition.Clear();
 
             txtName.Focus();
@@ -146,22 +138,14 @@ namespace WikiDataStructure
             // Get each col. data.
             string name = ListViewData.SelectedItems[0].SubItems[0].Text;
             string category = ListViewData.SelectedItems[0].SubItems[1].Text;
-            string structureData = ListViewData.SelectedItems[0].SubItems[2].Text;
+            string structure = ListViewData.SelectedItems[0].SubItems[2].Text;
             string definition = ListViewData.SelectedItems[0].SubItems[3].Text;
 
             // Pass the data to textboxes.
             txtName.Text = name;
-            cboCategory.Text = category;
+            txtCategory.Text = category;
+            txtStructure.Text = structure;
             txtDefinition.Text = definition;
-
-            if (structureData == "Linear")
-            {
-                rdoLinear.Checked = true;
-            }
-            else if (structureData == "Non-Linear")
-            {
-                rdoNonLinear.Checked = true;
-            }
         }
         #endregion        
 
@@ -177,8 +161,8 @@ namespace WikiDataStructure
                     if (DataTable[x, 0] == "~")
                     {                    
                         DataTable[x, 0] = txtName.Text;
-                        DataTable[x, 1] = cboCategory.Text;
-                        DataTable[x, 2] = structure;
+                        DataTable[x, 1] = txtCategory.Text;
+                        DataTable[x, 2] = txtStructure.Text;
                         DataTable[x, 3] = txtDefinition.Text;
                         toolStripStatusLabel1.Text = "Successfully added.";
                         ClearTextboxes(); // Clear all textboxes.
@@ -205,8 +189,8 @@ namespace WikiDataStructure
             {
                 selectedIndex = ListViewData.SelectedIndices[0]; // Get the index of which has been selected.              
                 DataTable[selectedIndex, 0] = txtName.Text;
-                DataTable[selectedIndex, 1] = cboCategory.Text;
-                DataTable[selectedIndex, 2] = structure;
+                DataTable[selectedIndex, 1] = txtCategory.Text;
+                DataTable[selectedIndex, 2] = txtStructure.Text;
                 DataTable[selectedIndex, 3] = txtDefinition.Text;
                 toolStripStatusLabel1.Text = "Successfully edited.";
             }
@@ -251,6 +235,7 @@ namespace WikiDataStructure
         //     a separate swap method that passes the array element to be swapped (do not use any built-in array methods)
         private void btnBubbleSort_Click(object sender, EventArgs e)
         {
+            toolStripStatusLabel1.Text = "Data sorted";
             SortTable();            
             UpdateListView();
         }
@@ -308,7 +293,7 @@ namespace WikiDataStructure
                 int mid = (min + max) / 2;
                 if (string.CompareOrdinal(DataTable[mid, 0], target) == 0) // If the mid of array equals target, giving feedback to user, exiting loop.
                 {
-                    toolStripStatusLabel1.Text = "Fond";
+                    toolStripStatusLabel1.Text = "Fond in row " + (mid + 1);
                     ListViewData.SelectedItems.Clear();
                     ListViewData.Items[mid].Selected = true;
                     ListViewData.Focus(); // Highlight the target.
@@ -368,7 +353,7 @@ namespace WikiDataStructure
         {     
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
-                ResetTable(); // Clear the previous opened file
+                ResetTable(); // Clear the previous data opened file
                 openFile.Filter = "definitions (*.dat)|*.dat";
                 openFile.InitialDirectory = @"C:\\temp\\";
                 if (openFile.ShowDialog() == DialogResult.OK)
@@ -396,8 +381,7 @@ namespace WikiDataStructure
                 }
             }            
         }
-        #endregion
-                
+        #endregion                
     }
 }
 
