@@ -297,6 +297,10 @@ namespace WikiDataStructure
                     ListViewData.SelectedItems.Clear();
                     ListViewData.Items[mid].Selected = true;
                     ListViewData.Focus(); // Highlight the target.
+                    txtName.Text = DataTable[mid, 0];
+                    txtCategory.Text = DataTable[mid, 1];
+                    txtStructure.Text = DataTable[mid, 2];
+                    txtDefinition.Text = DataTable[mid, 3];
                     break; // End loop.
                 }
                 else if (string.CompareOrdinal(DataTable[mid, 0], target) < 0) // If the mid of array less than target, focus on the half bottom records.
